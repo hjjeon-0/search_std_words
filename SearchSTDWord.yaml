@@ -1,0 +1,236 @@
+openapi: 3.0.2
+info:
+  title: MoldON API V1
+  version: 1.0.0
+  description: |-
+    Moldon Search Standard Words API
+    - 3. 표준어 카테고리 목록
+    - 4. 표준어 목록
+    - 5. 유사어 조회
+  x-logo: 
+    url: 'https://hjjeon-0.github.io/search_std_words/moldon_logo.png'
+    altText: A Logo image of MoldON
+paths:
+  /GetCategories:
+    post:
+      summary: GetCategories
+      tags:
+        - 표준어/유사어 조회
+      description: >-
+        금형 표준어 카테고리 목록 출력
+      parameters: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              example:
+                input_file: 한국금형산업진흥회_사업자등록증.pdf
+                result:
+                  comp_num: 410-82-13426
+                  comp_nm: (사)한국금형산업진흥회
+                  representative: 박화석
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Response_GetCategories'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_Body_GetCategories'
+  /GetStandardWords:
+    post:
+      summary: GetStandardWords
+      tags:
+        - 표준어/유사어 조회
+      description: >-
+        금형 표준어 목록 조회
+      parameters: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              example:
+                StandardWordsInfo:
+                  Top_Category: CA101
+                  Sub_Category: CA201
+                  Total_num_StandardWords: 10
+                  StandardWordsList:
+                    ["캐버티",
+                      "코어",
+                      "아이 볼트",
+                      "(다름질 가공한)평판",
+                      "(다듬질 가공한)원형판",
+                      "인서트",
+                      "패드",
+                      "금형 표준 부품",
+                      "테이퍼 맞춤핀",
+                      "냉각수관 이음쇠"]
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Response_GetStdWordsInfo'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_Body_GetStandardWords'
+  /GetSimilarWords:
+    post:
+      summary: GetSimilarWords
+      tags:
+        - 표준어/유사어 조회
+      description: >-
+        금형 표준어에 따른 유사어 반환
+      parameters: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              example:
+                SimilarWordsInfo:
+                  standard_mold_word: 지그
+                  num_of_similar_words: 2
+                  similar_mold_words: 
+                    ["IMD",
+                    "공구"]
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Response_GetSimilarWordsInfo'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_Body_GetSimilarWords'
+
+servers:
+  - url: http://ec2-52-79-123-200.ap-northeast-2.compute.amazonaws.com:8090/v1
+    description: Production server
+security: []
+components:
+  securitySchemes:
+    api-key:
+      type: apiKey
+      name: api-key
+      in: header
+
+  schemas:
+    Response_GetCategories:
+      description: Respresentation of category information response.
+      type: object
+      properties:
+        CategoryInfo:
+          $ref: '#/components/schemas/CategoryInfo'
+    Response_GetStdWordsInfo: 
+      description: Representation of standard words information response.
+      type: object
+      properties:
+        StandardWordsInfo:
+          $ref: '#/components/schemas/StandardWordsInfo'
+    Response_GetSimilarWordsInfo: 
+      description: Representation of similar words information response.
+      type: object
+      properties:
+        SimilarWordsInfo:
+          $ref: '#/components/schemas/SimilarWordsInfo'
+    CategoryInfo:
+      description: 금형 표준어 카테고리 정보
+      type: object
+      properties:
+        CA1:
+          $ref: '#/components/schemas/CA1'
+        CA2:
+          $ref: '#/components/schemas/CA2'
+    CA1:
+      description: 금형 표준어 상위 카테고리 정보
+      type: object
+      properties:
+        category1_cd:
+          description: 상위 카테고리 식별자
+          type: string
+        category1_nm:
+          description: 상위 카테고리명
+          type: string
+    CA2:
+      description: 금형 표준어 하위 카테고리 정보
+      type: object
+      properties:
+        category2_cd:
+          description: 하위 카테고리 식별자
+          type: string
+        category2_nm:
+          description: 하위 카테고리명
+          type: string
+    StandardWordsInfo:
+      description: 표준어 목록 정보
+      type: object
+      properties:
+        Top_Category:
+          description: 사용자 입력 표준어 상위 카테고리
+          type: string
+        Sub_Category:
+          description: 사용자 입력 표준어 하위 카테고리
+          type: string
+        Total_num_StandardWords:
+          description: 입력 카테고리에 해당하는 표준어 개수
+          type: integer
+          format: int32
+        StandardWordsList:
+          description: 입력 카테고리에 해당하는 표준어 리스트
+          type: array
+    SimilarWordsInfo:
+      description: 입력 표준어에 해당하는 유사어 정보
+      type: object
+      properties:
+        standard_mold_word:
+          description: 사용자 입력 표준어
+          type: string
+        num_of_similar_words:
+          description: 입력 표준어에 해당하는 유사어 개수
+          type: integer
+          format: int32
+        similar_mold_words:
+          description: 입력 표준어에 해당하는 유사어 리스트
+          type: array
+          nullable: true
+    Request_Body_GetCategories:
+      description: Get Categories of Standard Words
+      required: ["view_CA1", "view_CA2"]
+      type: object
+      properties:
+        view_CA1:
+          type: boolean
+          default: true
+        view_CA2:
+          type: boolean
+          default: true
+    Request_Body_GetStandardWords:
+      description: Get Information of Standard Words
+      type: object
+      properties:
+        category_1:
+          type: string
+          default: ""
+          nullable: true
+        category_2:
+          type: string
+          default: ""
+          nullable: true
+        is_KOR:
+          type: boolean
+          default: true
+          nullable: true
+    Request_Body_GetSimilarWords:
+      description: Get Information of Similar Words
+      required: ["StandardWord"]
+      type: object
+      properties:
+        StandardWord:
+          type: string
+          default: ""
+          nullable: false
+    
