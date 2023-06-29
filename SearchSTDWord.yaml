@@ -152,6 +152,7 @@ components:
         category1_cd:
           description: 상위 카테고리 식별자
           type: string
+          example: CA101
         category1_nm:
           description: 상위 카테고리명
           type: string
@@ -162,6 +163,7 @@ components:
         category2_cd:
           description: 하위 카테고리 식별자
           type: string
+          example: CA201
         category2_nm:
           description: 하위 카테고리명
           type: string
@@ -216,10 +218,12 @@ components:
           type: string
           default: ""
           nullable: true
+          examplel: CA101
         category_2:
           type: string
           default: ""
           nullable: true
+          example: CA201
         is_KOR:
           type: boolean
           default: true
