@@ -215,7 +215,7 @@ components:
       type: object
       properties:
         category_1:
-          type: string
+          type: string 
           default: ""
           nullable: true
           examplel: CA101
